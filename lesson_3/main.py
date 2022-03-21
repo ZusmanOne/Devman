@@ -55,12 +55,12 @@ def download_book():  # функция скачаивает книгу парс�
         print('Заголовок:',title.split('::')[0].strip(), '\n', url_img, sep='')
 
 
-while int(payload['id']) <= a:  # переменная а это счетчик и количество книг которое будет скачиватсья
-    try:
-        download_book()
-    except requests.exceptions.HTTPError:  # если отловлена такая ошибка то
-        pass
-    payload['id'] += 1  # увеличиваем этот счетчик вместе с id
+# while int(payload['id']) <= a:  # переменная а это счетчик и количество книг которое будет скачиватсья
+#     try:
+#         download_book()
+#     except requests.exceptions.HTTPError:  # если отловлена такая ошибка то
+#         pass
+#     payload['id'] += 1  # увеличиваем этот счетчик вместе с id
 
 # for i in range(1, 11):
 #     url = "https://tululu.org/"
@@ -70,3 +70,36 @@ while int(payload['id']) <= a:  # переменная а это счетчик 
 #         print('редирект', response.url)
 #     else:
 #         print('пусто', response.url)
+
+# def download_comment():
+#     url = "https://tululu.org"
+#     for i in range(1, 11):
+#         url_page = urljoin(url, 'b' + str(i) + '/')
+#         response = requests.get(url_page)
+#         soup = BeautifulSoup(response.text, 'lxml')
+#         if not response.history:
+#             tag_comment = soup.find(id='content').find_all('span',{'class':'black'})
+#             tag_title = soup.find('h1').text
+#             print(tag_title.split('::')[0].strip())
+#             for i in tag_comment:
+#                 print(i.get_text())
+
+def download_ganre():
+    url = 'https://tululu.org/'
+    for i in range(1,11):
+        url_page = urljoin(url, 'b'+ str(i)+'/')
+        response = requests.get(url_page)
+        soup = BeautifulSoup(response.text, 'lxml')
+        ganre = []
+        if not response.history:
+            tag_title = soup.find('h1').text
+            tag_ganre = soup.find('span', class_='d_book').find_all('a')
+            for i in tag_ganre:
+                ganre.append(i.text)
+            print('Заголовок:',tag_title.split('::')[0].strip(),url_page,'\n', ganre,)
+        #print(tag_ganre, url_page)
+
+download_ganre()
+
+
+# download_comment()
