@@ -100,10 +100,10 @@ def download_ganre():
         #print(tag_ganre, url_page)
 
 
-def parse_book_page():
+def parse_book_page(start=int(input()),end=int(input())):
     main_url = 'https://tululu.org/'
     parse = {}
-    for i in range(1,11):
+    for i in range(start,end):
         url_page = urljoin(main_url, 'b'+ str(i)+'/')
         response = requests.get(url_page)
         soup = BeautifulSoup(response.text, 'lxml')
