@@ -99,7 +99,25 @@ def download_ganre():
             print('Заголовок:',tag_title.split('::')[0].strip(),url_page,'\n', ganre,)
         #print(tag_ganre, url_page)
 
-download_ganre()
+
+def parse_book_page():
+    main_url = 'https://tululu.org/'
+    parse = {}
+    for i in range(1,11):
+        url_page = urljoin(main_url, 'b'+ str(i)+'/')
+        response = requests.get(url_page)
+        soup = BeautifulSoup(response.text, 'lxml')
+        if not response.history:
+            parse_title = soup.find('h1').text
+            parse['title'] = parse_title.split('::')[0].strip()
+            parse['author'] = parse_title.split('::')[1].strip()
+            ganre_book = soup.find('span', class_='d_book').find_all('a')
+            parse['ganre'] = [i.text for i in ganre_book]
+            comment_book = soup.find(id='content').find_all('span', {'class':'black'})
+            parse['comment'] = [i.text for i in comment_book]
+            print(parse['title'],parse['ganre'],sep='\n')
+
+parse_book_page()
 
 
 # download_comment()
