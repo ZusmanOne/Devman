@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename, sanitize_filepath
 from urllib.parse import urljoin, urlsplit
+import argparse
 
 a = 10
 payload = {'id': '2'}
@@ -44,7 +45,6 @@ def download_book():  # функция скачаивает книгу парс�
     path.mkdir(parents=False, exist_ok=True)  # создается папка с именем path
     payload['id'] = int(payload['id'])  # значение по ключу преобразуем в int
     response = requests.get(url_download, payload)  # получаем респонс от запроса
-
     if response.history:  # если запрос имеет перенаправление
         check_for_redirect(response)  # вызываем ф-ию которая в начале
     else:
@@ -55,12 +55,12 @@ def download_book():  # функция скачаивает книгу парс�
         print('Заголовок:',title.split('::')[0].strip(), '\n', url_img, sep='')
 
 
-# while int(payload['id']) <= a:  # переменная а это счетчик и количество книг которое будет скачиватсья
-#     try:
-#         download_book()
-#     except requests.exceptions.HTTPError:  # если отловлена такая ошибка то
-#         pass
-#     payload['id'] += 1  # увеличиваем этот счетчик вместе с id
+while int(payload['id']) <= a:  # переменная а это счетчик и количество книг которое будет скачиватсья
+    try:
+        download_book()
+    except requests.exceptions.HTTPError:  # если отловлена такая ошибка то
+        pass
+    payload['id'] += 1  # увеличиваем этот счетчик вместе с id
 
 # for i in range(1, 11):
 #     url = "https://tululu.org/"
@@ -84,23 +84,28 @@ def download_book():  # функция скачаивает книгу парс�
 #             for i in tag_comment:
 #                 print(i.get_text())
 
-def download_ganre():
-    url = 'https://tululu.org/'
-    for i in range(1,11):
-        url_page = urljoin(url, 'b'+ str(i)+'/')
-        response = requests.get(url_page)
-        soup = BeautifulSoup(response.text, 'lxml')
-        ganre = []
-        if not response.history:
-            tag_title = soup.find('h1').text
-            tag_ganre = soup.find('span', class_='d_book').find_all('a')
-            for i in tag_ganre:
-                ganre.append(i.text)
-            print('Заголовок:',tag_title.split('::')[0].strip(),url_page,'\n', ganre,)
-        #print(tag_ganre, url_page)
+# def download_ganre():
+#     url = 'https://tululu.org/'
+#     for i in range(1,11):
+#         url_page = urljoin(url, 'b'+ str(i)+'/')
+#         response = requests.get(url_page)
+#         soup = BeautifulSoup(response.text, 'lxml')
+#         ganre = []
+#         if not response.history:
+#             tag_title = soup.find('h1').text
+#             tag_ganre = soup.find('span', class_='d_book').find_all('a')
+#             for i in tag_ganre:
+#                 ganre.append(i.text)
+#             print('Заголовок:',tag_title.split('::')[0].strip(),url_page,'\n', ganre,)
+#         #print(tag_ganre, url_page)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('start', help='Ввелите id с которого начать', type=int)
+parser.add_argument('end', help='Введите конечный id',type=int)
+args = parser.parse_args()
 
 
-def parse_book_page(start=int(input()),end=int(input())):
+def parse_book_page(start, end):
     main_url = 'https://tululu.org/'
     parse = {}
     for i in range(start,end):
@@ -117,7 +122,8 @@ def parse_book_page(start=int(input()),end=int(input())):
             parse['comment'] = [i.text for i in comment_book]
             print(parse['title'],parse['ganre'],sep='\n')
 
-parse_book_page()
+
+parse_book_page(args.start, args.end)
 
 
 # download_comment()
