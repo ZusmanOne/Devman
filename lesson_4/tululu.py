@@ -84,7 +84,7 @@ def download_description():
 #             parse_title = soup.find('h1').text
 #             title = str(i)+'.' + parse_title.split('::')[0].strip() + '.txt'
 #             with open(os.path.join(path, title), 'bw') as file:
-#                 file.write(response_dwnld.content)
-
+# #                 file.write(response_dwnld.content)
+# dfdf
 
 download_description()
