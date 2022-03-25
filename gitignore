@@ -150,9 +150,10 @@ dmypy.json
 cython_debug/
 
 # catalog
-books/
-book/
-image/
+lesson_3/books
+lesson_4/book
+lesson_3/image
+lesson_4/image
 
 
 # PyCharm
