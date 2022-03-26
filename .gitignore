@@ -153,6 +153,7 @@ cython_debug/
 **/books
 lesson_4/book/
 **/image
+# **/catalog игнорирует все папки с таким именем
 
 
 
