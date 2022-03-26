@@ -150,10 +150,11 @@ dmypy.json
 cython_debug/
 
 # catalog
-/books
-/book
-/image
-/image
+**/books
+lesson_4/book/
+**/image
+# **/catalog игнорирует все папки с таким именем
+
 
 
 # PyCharm
