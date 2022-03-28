@@ -101,7 +101,7 @@ while int(payload['id']) <= a:  # переменная а это счетчик 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('start', help='Ввелите id с которого начать', type=int)
-parser.add_argument('end', help='Введите конечный id',type=int)
+parser.add_argument('end', help='Введите конечный id', type=int)
 args = parser.parse_args()
 
 

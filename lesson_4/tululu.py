@@ -1,11 +1,10 @@
 import os.path
-
 from bs4 import BeautifulSoup
 import requests
 from pathlib import Path
 from urllib.parse import urljoin, urlparse, urlsplit
 import json
-
+import argparse
 
 # def parse_book_category():
 #     category_url = "https://tululu.org/l55/"
@@ -20,8 +19,13 @@ import json
 #             url_book = urljoin(category_url, id_book)
 #             print(url_book)
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--start', help='Ввелите номер страницы с какой начать скачивать', type=int)
+parser.add_argument('--end', default=702, help='Введите номер конечной страницы  скачивания', type=int)
+args = parser.parse_args()
 
-def download_description():
+
+def download_description(start, end):
     url_main = "https://tululu.org"
     url = "https://tululu.org/l55/"
     url_dwnld = "https://tululu.org/txt.php"
@@ -29,22 +33,21 @@ def download_description():
     path_image.mkdir(parents=False, exist_ok=True)
     path_book = Path('book')
     path_book.mkdir(parents=False, exist_ok=True)
-    for i in range(1, 2):
+    for i in range(start, end): # в цикле указываюется диапазон страниц с какой по какую скачивать
         url_book = urljoin(url, str(i))  # урл списка книг по жанрам (по странично)
-        print(url_book)
         response_genre = requests.get(url_book)
         soup_genre = BeautifulSoup(response_genre.text, 'lxml')
         list_book = []
         if not response_genre.history:
             selector = "table.d_book"
             parse_book_page = soup_genre.select(selector)
-            for i in parse_book_page:
-                id_page = i.find('a').get('href')
-                id_txt = id_page.strip('/b')
-                response_dwnld = requests.get(url_dwnld, {'id':id_txt})
-                url_page = urljoin(url, id_page)
+            for i in parse_book_page: # цикл идет по каждой книжке на странице
+                id_page = i.find('a').get('href')  # получем id книги
+                id_txt = id_page.strip('/b') # От id книги отбрасывается все кроме цифр, что бы получить урл для скачки
+                response_dwnld = requests.get(url_dwnld, {'id':id_txt})  # урл для скачки
+                url_page = urljoin(url, id_page)  # формируется урл книги
                 response_page = requests.get(url_page)
-                if not response_page.history and not response_dwnld.history:
+                if not response_page.history:
                     about_book = {}
                     soup_page = BeautifulSoup(response_page.text, 'lxml')
                     selector_title = "h1"
@@ -64,11 +67,15 @@ def download_description():
                     response_image = requests.get(url_image)
                     url_parse = urlsplit(url_image)
                     about_book['image_src'] = os.path.join(path_image, url_parse.path.split('/')[-1])
-                    with open(os.path.join(path_book, str(id_txt)+'.'+about_book['title']+'.txt'), 'bw') as file:
-                        file.write(response_dwnld.content)
-                    with open(os.path.join(path_image, url_parse.path.split('/')[-1]), 'bw') as image:
-                        image.write(response_image.content)
                     list_book.append(about_book)
+                    print(url_page, response_dwnld.history)
+                    if not response_dwnld.history:
+                        with open(os.path.join(path_book, str(id_txt)+'.'+about_book['title']+'.txt'), 'bw') as file:
+                            file.write(response_dwnld.content)
+                        with open(os.path.join(path_image, url_parse.path.split('/')[-1]), 'bw') as image:
+                            image.write(response_image.content)
+
+
 
         with open('about_book.json', 'w') as file:
             json.dump(list_book, file, ensure_ascii=False, indent=4)
@@ -92,4 +99,5 @@ def download_description():
 # #                 file.write(response_dwnld.content)
 # dfdf
 
-download_description()
+
+download_description(args.start, args.end)
