@@ -150,8 +150,7 @@ dmypy.json
 cython_debug/
 
 # catalog
-**/books
-lesson_4/book/
+**/book
 **/image
 # **/catalog игнорирует все папки с таким именем
 

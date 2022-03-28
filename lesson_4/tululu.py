@@ -30,13 +30,14 @@ def download_description():
     path_book = Path('book')
     path_book.mkdir(parents=False, exist_ok=True)
     for i in range(1, 2):
-        url_book = urljoin(url, str(i)) # урл списка книг по жанрам (по странично)
+        url_book = urljoin(url, str(i))  # урл списка книг по жанрам (по странично)
         print(url_book)
         response_genre = requests.get(url_book)
         soup_genre = BeautifulSoup(response_genre.text, 'lxml')
         list_book = []
         if not response_genre.history:
-            parse_book_page = soup_genre.find_all('table', class_='d_book')
+            selector = "table.d_book"
+            parse_book_page = soup_genre.select(selector)
             for i in parse_book_page:
                 id_page = i.find('a').get('href')
                 id_txt = id_page.strip('/b')
@@ -46,15 +47,20 @@ def download_description():
                 if not response_page.history and not response_dwnld.history:
                     about_book = {}
                     soup_page = BeautifulSoup(response_page.text, 'lxml')
-                    parse_title = soup_page.find('h1').text
+                    selector_title = "h1"
+                    parse_title = soup_page.select_one(selector_title).text
                     about_book['title'] = parse_title.split('::')[0].strip()
-                    about_book['author'] = parse_title.split('::')[1].strip()
-                    parse_comment = soup_page.find(id='content').find_all('span', {'class': 'black'})
+                    # about_book['author'] = parse_title.split('::')[1].strip()
+                    select_comment = "#content span.black"  # замена нижней строчке (для id добавилась #)
+                    # parse_comment = soup_page.find(id='content').find_all('span', {'class': 'black'})
+                    parse_comment = soup_page.select(select_comment)
                     about_book['comment'] = [i.text for i in parse_comment]
-                    parse_genre = soup_page.find('span', class_='d_book').find_all('a')
+                    select_genre = "span.d_book a"  # замена нижней строчке
+                    # parse_genre = soup_page.find('span', class_='d_book').find_all('a')
+                    parse_genre = soup_page.select(select_genre)
                     about_book['genre'] = [i.text for i in parse_genre]
                     parse_image = soup_page.find(class_='bookimage').find('img')['src']
-                    url_image = urljoin(url_main,parse_image)
+                    url_image = urljoin(url_main, parse_image)
                     response_image = requests.get(url_image)
                     url_parse = urlsplit(url_image)
                     about_book['image_src'] = os.path.join(path_image, url_parse.path.split('/')[-1])
@@ -62,7 +68,6 @@ def download_description():
                         file.write(response_dwnld.content)
                     with open(os.path.join(path_image, url_parse.path.split('/')[-1]), 'bw') as image:
                         image.write(response_image.content)
-
                     list_book.append(about_book)
 
         with open('about_book.json', 'w') as file:
