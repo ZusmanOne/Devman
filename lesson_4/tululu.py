@@ -47,7 +47,8 @@ def download_description(start, end):
                 response_dwnld = requests.get(url_dwnld, {'id':id_txt})  # урл для скачки
                 url_page = urljoin(url, id_page)  # формируется урл книги
                 response_page = requests.get(url_page)
-                if not response_page.history:
+                print(url_page,response_page.history)
+                if not response_page.history and not response_dwnld.history:
                     about_book = {}
                     soup_page = BeautifulSoup(response_page.text, 'lxml')
                     selector_title = "h1"
@@ -67,14 +68,11 @@ def download_description(start, end):
                     response_image = requests.get(url_image)
                     url_parse = urlsplit(url_image)
                     about_book['image_src'] = os.path.join(path_image, url_parse.path.split('/')[-1])
+                    # with open(os.path.join(path_book, str(id_txt)+'.'+about_book['title']+'.txt'), 'bw') as file:
+                    #     file.write(response_dwnld.content)
+                    # with open(os.path.join(path_image, url_parse.path.split('/')[-1]), 'bw') as image:
+                    #     image.write(response_image.content)
                     list_book.append(about_book)
-                    print(url_page, response_dwnld.history)
-                    if not response_dwnld.history:
-                        with open(os.path.join(path_book, str(id_txt)+'.'+about_book['title']+'.txt'), 'bw') as file:
-                            file.write(response_dwnld.content)
-                        with open(os.path.join(path_image, url_parse.path.split('/')[-1]), 'bw') as image:
-                            image.write(response_image.content)
-
 
 
         with open('about_book.json', 'w') as file:
