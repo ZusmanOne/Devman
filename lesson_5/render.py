@@ -8,12 +8,13 @@ from pathlib import Path
 from urllib.parse import urljoin, urlparse, urlsplit
 import json
 import argparse
-
+from livereload import Server
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--start', help='Ввелите номер страницы с какой начать скачивать', type=int)
 parser.add_argument('--end', default=702, help='Введите номер конечной страницы  скачивания', type=int)
 args = parser.parse_args()
+
 
 #
 # def download_description(start, end):
@@ -75,26 +76,32 @@ args = parser.parse_args()
 #
 # download_description(args.start, args.end)
 
-env = Environment(
-    loader=FileSystemLoader('.'),
-    autoescape=select_autoescape(['html', 'xml'])
-)
 
-template = env.get_template('book.html')
-
-with open("about_book.json", "r") as my_file:
-    capitals_json = my_file.read()
-
-capitals = json.loads(capitals_json)
+# server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+# server.serve_forever()
 
 
-rendered_page = template.render(
-    book=capitals,
+def on_reload():  # функция рендерит и сохраняет из book.html(его правим) в index.html
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
 
-)
+    template = env.get_template('book.html')
+    with open("about_book.json", "r") as my_file:  # достает данные из файла
+        capitals_json = my_file.read()
 
-with open('index.html', 'w', encoding="utf8") as file:
-    file.write(rendered_page)
+    capitals = json.loads(capitals_json)
+    rendered_page = template.render(  # создаем контекст для шаблона(словарь)
+        book=capitals,
+    )
+    with open('index.html', 'w', encoding="utf8") as file:
+        file.write(rendered_page)
+    print('поменялось')
 
-server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-server.serve_forever()
+
+on_reload()
+
+server = Server()  # позволяет отслеживать изменения без перезагрузки сервера
+server.watch('book.html', on_reload)
+server.serve(root='.')

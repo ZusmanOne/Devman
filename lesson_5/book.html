@@ -12,23 +12,31 @@
   </head>
   <body>
     <h1>Hello, world!</h1>
+  <div class="container">
+    <div class="row row-cols-2">
     {%  for i in book%}
-    <div class="card mb-3" style="max-width: 540px;">
-      <div class="row no-gutters">
-        <div class="col-md-4">
-          <img src="{{i['image_src']}}" class="card-img" alt="{{i['alt_img']}}">
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h3 class="card-title">{{i['title']}}</h3>
-            <h5 class="card-title">{{i['author']}}</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+
+      <div class="col-6">
+        <div class="card mb-3" style="max-width: 540px;">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="{{i['image_src']}}" class="card-img" alt="{{i['alt_img']}}">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h3 class="card-title">{{i['title']}}</h3>dsd
+                <h5 class="card-title">{{i['author']}}</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
     {% endfor %}
+      </div>
+    </div>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
