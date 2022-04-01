@@ -16,7 +16,7 @@ parser.add_argument('--end', default=702, help='Введите номер кон
 args = parser.parse_args()
 
 
-#
+
 # def download_description(start, end):
 #     url_main = "https://tululu.org"
 #     url = "https://tululu.org/l55/"
@@ -62,6 +62,7 @@ args = parser.parse_args()
 #                     url_parse = urlsplit(url_image)
 #                     about_book['image_src'] = os.path.join(path_image, url_parse.path.split('/')[-1])
 #                     about_book['alt_img'] = parse_title.split('::')[0].strip()
+#                     about_book['path_book'] = os.path.join(path_book, str(id_txt) + '.' + about_book['title'] + '.txt')
 #                     # with open(os.path.join(path_book, str(id_txt)+'.'+about_book['title']+'.txt'), 'bw') as file:
 #                     #     file.write(response_dwnld.content)
 #                     # with open(os.path.join(path_image, url_parse.path.split('/')[-1]), 'bw') as image:
